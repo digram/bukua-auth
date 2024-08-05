@@ -1,0 +1,33 @@
+{
+    "name": "rango-tech/bukua-auth",
+    "type": "library",
+    "description": "Login with Bukua for your Laravel project",
+    "homepage": "https://bukuaplatform.com",
+    "authors": [
+        {
+            "name": "emmanuel mwita",
+            "email": "emmanuelthemwitah@gmail.com",
+            "role": "developer"
+        },
+        {
+            "name": "dennis mayeku",
+            "email": "dennismayeku@gmail.com",
+            "role": "developer"
+        }
+    ],
+    "minimum-stability": "stable",
+    "version": "1.0.0",
+    "autoload": {
+        "psr-4": {
+            "BukuaAuth\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "BukuaAuth\\Providers\\BukuaAuthServiceProvider",
+                "BukuaAuth\\Providers\\BukuaAuthEventServiceProvider"
+            ]
+        }
+    }
+}
