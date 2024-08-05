@@ -55,7 +55,9 @@ Update your `users` table to ensure it includes the following fields:
 
 5. In your terminal, run `composer require rango-tech/bukua-auth`.
 
-6. To display the `Login with Bukua` button, add the following anywhere in your Blade file:
+6. Clear your configuration cache by running `php artisan cache:clear` or `php artisan config:cache`.
+
+7. To display the `Login with Bukua` button, add the following anywhere in your Blade file:
 
 ```php
 
