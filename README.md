@@ -6,11 +6,13 @@ This package enables you to implement `Login with Bukua` in your Laravel project
 
 Add the following to your `.env` file:
 
-`BUKUA_USER_ACCESS_CLIENT_ID=your-client-id`<br>
-`BUKUA_USER_ACCESS_CLIENT_SECRET=your-client_secret`<br>
-`BUKUA_USER_ACCESS_CALLBACK_URL=http://your-app-url/bukua-auth/callback`<br>
-`BUKUA_BASE_URL=https://bukua-core.apptempest.com/`<br>
-`BUKUA_USER_MODEL="App\\Models\\User"`<br>
+```bash
+`BUKUA_USER_ACCESS_CLIENT_ID=your-client-id`
+`BUKUA_USER_ACCESS_CLIENT_SECRET=your-client_secret`
+`BUKUA_USER_ACCESS_CALLBACK_URL=http://your-app-url/bukua-auth/callback`
+`BUKUA_BASE_URL=https://bukua-core.apptempest.com/`
+`BUKUA_USER_MODEL="App\\Models\\User"`
+```
 
 #### User model configuration
 
