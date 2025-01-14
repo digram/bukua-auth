@@ -4,7 +4,7 @@ This package enables you to implement `Login with Bukua` in your Laravel project
 
 ### Configuration
 
-At the root of your project, add the following to your `.env` file:
+Add the following to your `.env` file:
 
 `BUKUA_USER_ACCESS_CLIENT_ID=your-client-id`<br>
 `BUKUA_USER_ACCESS_CLIENT_SECRET=your-client_secret`<br>
@@ -14,25 +14,39 @@ At the root of your project, add the following to your `.env` file:
 
 #### User model configuration
 
-Update the `fillable` property of your User model to ensure it includes the following values:
+To ensure your `User` model can handle the necessary data, you need to update the `fillable` property to include the following fields:
 
-`bukua_user_id`<br>
-`bukua_access_token`<br>
-`bukua_refresh_token`<br>
-`first_name`<br>
-`last_name`<br>
-`email`<br>
+```php
+     protected $fillable = [
+        ...
+         'bukua_user_id',
+         'bukua_access_token',
+         'bukua_refresh_token',
+         'first_name',
+         'last_name',
+         'email',
+     ];
+     ```
 
 #### Users table configuration
 
-Update your `users` table to ensure it includes the following fields:
+Update your `users` table migration to ensure it includes the following fields:
 
-`bukua_user_id` : char(36) NULL<br>
-`bukua_access_token` : text NULL<br>
-`bukua_refresh_token` : text NULL<br>
-`first_name` : varchar(255) NULL<br>
-`last_name` : varchar(255) NULL<br>
-`email` : varchar(255) NULL<br>
+ ```php
+     Schema::table('users', function ($table) {
+         $table->char('bukua_user_id', 36)->nullable();
+         $table->text('bukua_access_token')->nullable();
+         $table->text('bukua_refresh_token')->nullable();
+         $table->string('first_name')->nullable();
+         $table->string('last_name')->nullable();
+         $table->string('email')->nullable();
+     });
+     ```
+Execute the migration to apply the changes to your database:
+
+     ```bash
+     php artisan migrate
+     ```
 
 ### Installation
 
