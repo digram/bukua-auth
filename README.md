@@ -48,9 +48,9 @@ Update your `users` table migration to ensure it includes the following fields. 
 
 Execute the migration to apply the changes to your database:
 
-     ```bash
-     php artisan migrate
-     ```
+```bash
+    php artisan migrate
+```
 
 ### Installation
 
@@ -79,14 +79,13 @@ Execute the migration to apply the changes to your database:
 
 ```php
 
-            <!-- Login with Bukua-->
-            @if (Route::has('bukua-auth.authorize'))
-            <form action="{{ route('bukua-auth.authorize') }}" method="POST">
-                @csrf
-                <button type="submit" class="btn btn-primary">Login with Bukua</button>
-            </form>
-            @endif
-
+    <!-- Login with Bukua-->
+    @if (Route::has('bukua-auth.authorize'))
+    <form action="{{ route('bukua-auth.authorize') }}" method="POST">
+        @csrf
+        <button type="submit" class="btn btn-primary">Login with Bukua</button>
+    </form>
+    @endif
 ```
 
 When the button is clicked, the user should be redirected to the auth server for authorization, and then returned to your application as a logged in user.
