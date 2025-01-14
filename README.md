@@ -20,7 +20,7 @@ To ensure your `User` model can handle the necessary data, you need to update th
 
 ```php
      protected $fillable = [
-        ...
+          ...
          'bukua_user_id',
          'bukua_access_token',
          'bukua_refresh_token',
@@ -28,7 +28,7 @@ To ensure your `User` model can handle the necessary data, you need to update th
          'last_name',
          'email',
      ];
-     ```
+```
 
 #### Users table configuration
 
@@ -36,6 +36,7 @@ Update your `users` table migration to ensure it includes the following fields:
 
  ```php
      Schema::table('users', function ($table) {
+         ...
          $table->char('bukua_user_id', 36)->nullable();
          $table->text('bukua_access_token')->nullable();
          $table->text('bukua_refresh_token')->nullable();
@@ -43,7 +44,8 @@ Update your `users` table migration to ensure it includes the following fields:
          $table->string('last_name')->nullable();
          $table->string('email')->nullable();
      });
-     ```
+```
+
 Execute the migration to apply the changes to your database:
 
      ```bash
