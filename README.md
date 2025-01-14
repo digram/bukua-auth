@@ -26,7 +26,6 @@ To ensure your `User` model can handle the necessary data, you need to update th
          'bukua_refresh_token',
          'first_name',
          'last_name',
-         'email',
      ];
 ```
 
@@ -42,7 +41,6 @@ Update your `users` table migration to ensure it includes the following fields. 
          $table->text('bukua_refresh_token')->nullable();
          $table->string('first_name')->nullable();
          $table->string('last_name')->nullable();
-         $table->string('email')->nullable();
      });
 ```
 

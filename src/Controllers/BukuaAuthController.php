@@ -74,7 +74,7 @@ class BukuaAuthController extends Controller
             $user = $userModel::firstOrCreate(
                 ['bukua_user_id' => $account['user']['uid']],
                 [
-                    'email' => $account['user']['email'],
+                    // 'email' => $account['user']['email'],
                     'first_name' => $account['user']['first_name'],
                     'last_name' => $account['user']['last_name'],
                     'bukua_access_token' => $tokenData['access_token'],
@@ -87,7 +87,7 @@ class BukuaAuthController extends Controller
                 $user->update([
                     'bukua_access_token' => $tokenData['access_token'],
                     'bukua_refresh_token' => $tokenData['refresh_token'],
-                    'email' => $account['user']['email'],
+                    // 'email' => $account['user']['email'],
                     'first_name' => $account['user']['first_name'],
                     'last_name' => $account['user']['last_name'],
                 ]);
