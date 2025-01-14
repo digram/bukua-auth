@@ -15,10 +15,10 @@ class BukuaAuthController extends Controller
         $request->session()->put('bukua_auth_state', $state = str()->random(40));
 
         $query = http_build_query([
-            'client_id'     => config('services.bukua_auth.client_id'),
-            'redirect_uri'  => config('services.bukua_auth.callback_url'),
+            'client_id'     => config('services.bukua_auth.user_access_client_id'),
+            'redirect_uri'  => config('services.bukua_auth.user_access_callback_url'),
             'response_type' => 'code',
-            'scope'         => $request->input('scope'),
+            // 'scope'         => $request->input('scope'),
             'state'         => $state,
         ]);
 
@@ -41,9 +41,9 @@ class BukuaAuthController extends Controller
             // Request the access token
             $tokenResponse = Http::asForm()->post(config('services.bukua_auth.base_url') . 'api/bukua-auth/personal-token', [
                 'grant_type'    => 'authorization_code',
-                'client_id'     => config('services.bukua_auth.client_id'),
-                'client_secret' => config('services.bukua_auth.client_secret'),
-                'redirect_uri'  => config('services.bukua_auth.callback_url'),
+                'client_id'     => config('services.bukua_auth.user_access_client_id'),
+                'client_secret' => config('services.bukua_auth.user_access_client_secret'),
+                'redirect_uri'  => config('services.bukua_auth.user_access_callback_url'),
                 'code'          => $request->input('code'),
             ]);
 
