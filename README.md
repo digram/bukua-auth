@@ -56,7 +56,7 @@ Execute the migration to apply the changes to your database:
 
 2. Create a folder in your Laravel project called `packages`.
 
-3. Copy the downloaded folder `bukua-auth` into the `packages` folder of your Laravel project.
+3. Copy the downloaded folder `bukua-auth-main` into the `packages` folder of your Laravel project.
 
 4. Add the following to your `composer.json` file and save it:
 
@@ -64,7 +64,7 @@ Execute the migration to apply the changes to your database:
     "repositories": [
        {
         "type": "path",
-        "url": "packages/bukua-auth"
+        "url": "packages/bukua-auth-main"
         }
     ]
 ```
