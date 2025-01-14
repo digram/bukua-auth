@@ -32,7 +32,7 @@ To ensure your `User` model can handle the necessary data, you need to update th
 
 #### Users table configuration
 
-Update your `users` table migration to ensure it includes the following fields:
+Update your `users` table migration to ensure it includes the following fields. Ensure the fields are nullable.
 
  ```php
      Schema::table('users', function ($table) {
@@ -89,6 +89,6 @@ Execute the migration to apply the changes to your database:
 
 ```
 
-When the button is clicked, the user should be redirected to the auth server for authentication and authorization, and then returned to your application as a logged in user.
+When the button is clicked, the user should be redirected to the auth server for authorization, and then returned to your application as a logged in user.
 
 You can view the logic for logging in a user to your application in the `packages/bukua-auth/src/Controllers/BukuaAuthController@callback` controller method.

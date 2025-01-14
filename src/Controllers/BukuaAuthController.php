@@ -18,7 +18,6 @@ class BukuaAuthController extends Controller
             'client_id'     => config('services.bukua_auth.user_access_client_id'),
             'redirect_uri'  => config('services.bukua_auth.user_access_callback_url'),
             'response_type' => 'code',
-            // 'scope'         => $request->input('scope'),
             'state'         => $state,
         ]);
 
