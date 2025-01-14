@@ -69,9 +69,17 @@ Execute the migration to apply the changes to your database:
     ]
 ```
 
-5. In your terminal, run `composer require rango-tech/bukua-auth`.
+5. In your terminal, run 
 
-6. Clear your configuration cache by running `php artisan cache:clear`.
+```bash
+composer require rango-tech/bukua-auth
+```
+
+6. Clear your configuration cache by running
+
+```bash
+php artisan cache:clear
+```
 
 7. To display the `Login with Bukua` button, add the following anywhere in your Blade file:
 
