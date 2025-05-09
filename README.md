@@ -12,6 +12,7 @@ BUKUA_USER_ACCESS_CLIENT_SECRET=your-client_secret
 BUKUA_USER_ACCESS_CALLBACK_URL=http://your-app-url/bukua-auth/callback
 BUKUA_BASE_URL=https://bukua-core.apptempest.com/
 BUKUA_USER_MODEL="App\\Models\\User"
+BUKUA_REDIRECT_AFTER_LOGIN=your-dashboard-url
 ```
 
 #### User model configuration
