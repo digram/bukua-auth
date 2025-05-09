@@ -1,7 +1,7 @@
 {
     "name": "digram/bukua-auth",
     "type": "library",
-    "description": "Login with Bukua for your Laravel application",
+    "description": "Login with Bukua OAuth for your Laravel application",
     "keywords": [
         "bukua",
         "edtech",
