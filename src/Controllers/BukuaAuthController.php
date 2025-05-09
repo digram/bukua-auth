@@ -64,7 +64,7 @@ class BukuaAuthController extends Controller
                 return response()->json(['error' => 'Failed to fetch user data'], 400);
             }
 
-            $account = $accountResponse->json();
+            $account = $accountResponse->json()['response'] ?? [];
             if (!isset($account['user'])) {
                 return response()->json(['error' => 'No user found'], 400);
             }
