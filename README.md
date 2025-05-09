@@ -1,4 +1,4 @@
-# Login with Bukua for Laravel  
+# Login with Bukua OAuth for Laravel  
 
 This package simplifies **OAuth-based authentication** using Bukua in Laravel applications.
 
