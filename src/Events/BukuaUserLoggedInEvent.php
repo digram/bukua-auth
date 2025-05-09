@@ -9,7 +9,7 @@ class BukuaUserLoggedInEvent
 {
     use Dispatchable, SerializesModels;
 
-    public $data;
+    public $user;
 
     /**
      * Create a new event instance.
@@ -17,8 +17,8 @@ class BukuaUserLoggedInEvent
      * @param mixed $data
      * @return void
      */
-    public function __construct($data)
+    public function __construct($user)
     {
-        $this->data = $data;
+        $this->user = $user;
     }
 }
