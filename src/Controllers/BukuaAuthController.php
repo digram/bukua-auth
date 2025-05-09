@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
+use BukuaAuth\Events\BukuaUserLoggedInEvent;
+
 class BukuaAuthController extends Controller
 {
     public function authorize(Request $request)
@@ -81,6 +83,8 @@ class BukuaAuthController extends Controller
             );
 
             Auth::guard('web')->login($user);
+
+            event(new BukuaUserLoggedInEvent($user));
 
             return redirect()->intended(
                 config('services.bukua_auth.redirect_after_login', '/dashboard')

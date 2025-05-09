@@ -100,12 +100,12 @@ Listen for the `BukuaAuthLoggedIn` event to extend functionality:
 ```php
 // In your EventServiceProvider.php
 protected $listen = [
-    \BukuaAuth\Events\BukuaAuthLoggedIn::class => [
-        \App\Listeners\HandleBukuaLogin::class, // Your listener
+    \BukuaAuth\Events\BukuaUserLoggedInEvent::class => [
+        \App\Listeners\HandleBukuaUserLoggedIn::class, // Your listener
     ],
 ];
 ```
 
 **Example Use Cases:**  
 - Make further api calls, e.g, to fetch user subjects.  
-- Log login attempts.
+- Log logins.

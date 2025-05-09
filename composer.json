@@ -5,7 +5,9 @@
     "keywords": [
         "bukua",
         "edtech",
-        "kenya"
+        "kenya",
+        "laravel",
+        "authentication"
     ],
     "homepage": "https://www.bukuaplatform.com",
     "license": "Apache-2.0",
