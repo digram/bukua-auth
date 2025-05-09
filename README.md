@@ -106,6 +106,31 @@ protected $listen = [
 ];
 ```
 
+```php
+// \App\Listeners\HandleBukuaUserLoggedIn
+class HandleBukuaUserLoggedIn
+{
+    /**
+     * Handle the event.
+     *
+     * @param  \BukuaAuth\Events\BukuaUserLoggedInEvent  $event
+     * @return void
+     */
+    public function handle(BukuaUserLoggedInEvent $event)
+    {
+        // Access the user from the event
+        $user = $event->user;
+
+        // Write in laravel log
+        \Log::info("Bukua user logged in: {$user->uid}", [
+            'user_id' => $user->uid,
+            'email' => $user->email,
+            'timestamp' => now(),
+        ]);
+    }
+}
+```
+
 **Example Use Cases:**  
 - Make further api calls, e.g, to fetch user subjects.  
 - Log logins.
