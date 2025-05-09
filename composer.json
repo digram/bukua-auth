@@ -1,20 +1,27 @@
 {
-    "name": "rango-tech/bukua-auth",
+    "name": "digram/bukua-auth",
     "type": "library",
     "description": "Login with Bukua for your Laravel application",
-    "homepage": "https://bukuaplatform.com",
+    "keywords": [
+        "bukua",
+        "edtech",
+        "kenya"
+    ],
+    "homepage": "https://www.bukuaplatform.com",
+    "license": "Apache-2.0",
     "authors": [
         {
-            "name": "emmanuel mwita",
-            "email": "emmanuelthemwitah@gmail.com",
-            "role": "developer"
-        },
-        {
-            "name": "dennis mayeku",
-            "email": "dennismayeku@gmail.com",
-            "role": "developer"
+            "name": "Bukua Platform",
+            "homepage": "https://www.bukuaplatform.com",
+            "email": "dennismayeku@gmail.com"
         }
     ],
+    "support": {
+        "docs": "https://github.com/digram/bukua-auth",
+    },
+    "require": {
+        "php": "^5.6||^7.0||^8.0"
+    },
     "minimum-stability": "stable",
     "version": "2.0.0",
     "autoload": {

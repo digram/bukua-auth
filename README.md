@@ -1,19 +1,33 @@
-### Introduction
+# Login with Bukua for Laravel  
 
-This package enables you to implement `Login with Bukua` in your Laravel project.
+This package simplifies **OAuth-based authentication** using Bukua in Laravel applications.
 
-### Configuration
+## Prerequisites  
 
-Add the following to your `.env` file:
+**Bukua Developer Account**:  
+   - Create a **User Access Client** in the [Bukua Developer Dashboard](https://developer.bukuaplatform.com/).  
+   - Obtain your:  
+     - `client_id`  
+     - `client_secret`  
+
+## Configuration  
+
+Add these variables to your `.env` file:  
 
 ```bash
 BUKUA_USER_ACCESS_CLIENT_ID=your-client-id
-BUKUA_USER_ACCESS_CLIENT_SECRET=your-client_secret
-BUKUA_USER_ACCESS_CALLBACK_URL=http://your-app-url/bukua-auth/callback
-BUKUA_BASE_URL=https://bukua-core.apptempest.com/
-BUKUA_USER_MODEL="App\\Models\\User"
-BUKUA_REDIRECT_AFTER_LOGIN=your-dashboard-url
+BUKUA_USER_ACCESS_CLIENT_SECRET=your-client-secret
+
+BUKUA_USER_ACCESS_CALLBACK_URL="http://your-app-url/bukua-auth/callback"
+BUKUA_BASE_URL="https://bukua-core.apptempest.com/"
+
+BUKUA_USER_MODEL="App\\Models\\User"  # Your User model path
+BUKUA_REDIRECT_AFTER_LOGIN="/dashboard"  # Route after successful login
 ```
+
+### Key Notes:  
+✅ **`BUKUA_USER_MODEL`**: Ensure this matches your application’s `User` model location.  
+✅ **Callback URL**: Must be registered in your Bukua OAuth settings.
 
 #### User model configuration
 
@@ -31,7 +45,7 @@ To ensure your `User` model can handle the necessary data, you need to update th
 
 #### Users table configuration
 
-Update your `users` table migration to ensure it includes the following fields. Ensure the fields are nullable.
+Update your `users` table migration to ensure it includes the new fields. Ensure all fields in your users table are nullable to prevent errors when adding a new user.
 
  ```php
      Schema::table('users', function ($table) {
@@ -51,48 +65,47 @@ Execute the migration to apply the changes to your database:
 
 ### Installation
 
-1. Download this repository to your computer.
-
-2. Create a folder in your Laravel project called `packages`.
-
-3. Copy the downloaded folder `bukua-auth-main` into the `packages` folder of your Laravel project.
-
-4. Add the following to your `composer.json` file and save it:
-
-```json
-    "repositories": [
-       {
-        "type": "path",
-        "url": "packages/bukua-auth-main"
-        }
-    ]
-```
-
-5. In your terminal, run 
+1. In your terminal, run 
 
 ```bash
-composer require rango-tech/bukua-auth
+composer require digram/bukua-auth
 ```
 
-6. Clear your configuration cache by running
+2. Clear your configuration cache by running
 
 ```bash
 php artisan cache:clear
 ```
 
-7. To display the `Login with Bukua` button, add the following anywhere in your Blade file:
+### Adding the Login Button  
 
-```php
+To implement the **"Login with Bukua"** button in your Blade template:  
 
-    <!-- Login with Bukua-->
-    @if (Route::has('bukua-auth.authorize'))
+```html
+<!-- Login with Bukua Button -->
+@if (Route::has('bukua-auth.authorize'))
     <form action="{{ route('bukua-auth.authorize') }}" method="POST">
         @csrf
-        <button type="submit" class="btn btn-primary">Login with Bukua</button>
+        <button type="submit" class="btn btn-primary">
+            Login with Bukua
+        </button>
     </form>
-    @endif
+@endif
 ```
 
-When the button is clicked, the user should be redirected to the auth server for authorization, and then returned to your application as a logged in user.
+### Events (Optional Customization)  
 
-You can view the logic for logging in a user to your application in the `packages/bukua-auth/src/Controllers/BukuaAuthController@callback` controller method.
+Listen for the `BukuaAuthLoggedIn` event to extend functionality:  
+
+```php
+// In your EventServiceProvider.php
+protected $listen = [
+    \BukuaAuth\Events\BukuaAuthLoggedIn::class => [
+        \App\Listeners\HandleBukuaLogin::class, // Your listener
+    ],
+];
+```
+
+**Example Use Cases:**  
+- Make further api calls, e.g, to fetch user subjects.  
+- Log login attempts.

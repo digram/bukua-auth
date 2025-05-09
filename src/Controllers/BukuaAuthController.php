@@ -37,7 +37,7 @@ class BukuaAuthController extends Controller
         }
 
         try {
-            // Request the access token
+            // request the personal access token
             $tokenResponse = Http::asForm()->post(config('services.bukua_auth.base_url') . 'api/v1/bukua-auth/personal-token', [
                 'grant_type'    => 'authorization_code',
                 'client_id'     => config('services.bukua_auth.user_access_client_id'),
@@ -55,10 +55,8 @@ class BukuaAuthController extends Controller
                 return response()->json(['error' => 'No access token received'], 400);
             }
 
-            // Fetch user data with the access token
-            $accountResponse = Http::withHeaders([
-                'Authorization' => "Bearer " . $tokenData['access_token']
-            ])->get(config('services.bukua_auth.base_url') . 'api/v1/me');
+            // fetch basic user profile
+            $accountResponse = Http::withToken($tokenData['access_token'])->get(config('services.bukua_auth.base_url') . 'api/v1/me');
 
             if ($accountResponse->failed()) {
                 return response()->json(['error' => 'Failed to fetch user data'], 400);
@@ -71,28 +69,22 @@ class BukuaAuthController extends Controller
 
             $userModel = config('services.bukua_auth.user_model');
 
-            $user = $userModel::firstOrCreate(
-                ['bukua_user_id' => $account['user']['uid']],
-                [
-                    'name'                => $account['user']['first_name'] . " " . $account['user']['last_name'],
-                    'bukua_access_token'  => $tokenData['access_token'],
-                    'bukua_refresh_token' => $tokenData['refresh_token'],
-                ]
-            );
+            $userData = [
+                'bukua_access_token'  => $tokenData['access_token'],
+                'bukua_refresh_token' => $tokenData['refresh_token'],
+                'name'                => $account['user']['first_name'] . ' ' . $account['user']['last_name'],
+            ];
 
-            // If user was found (not created), update their information
-            if ($user->wasRecentlyCreated === false) {
-                $user->update([
-                    'bukua_access_token'  => $tokenData['access_token'],
-                    'bukua_refresh_token' => $tokenData['refresh_token'],
-                    'name'                => $account['user']['first_name'] . " " . $account['user']['last_name'],
-                ]);
-            }
+            $user = $userModel::updateOrCreate(
+                ['bukua_user_id' => $account['user']['uid']],
+                $userData
+            );
 
             Auth::guard('web')->login($user);
 
-            $redirectAfterLogin = config('services.bukua_auth.redirect_after_login', '/dashboard');
-            return redirect()->intended($redirectAfterLogin);
+            return redirect()->intended(
+                config('services.bukua_auth.redirect_after_login', '/dashboard')
+            );
         } catch (\Exception $e) {
             Log::error('Bukua auth callback error: ' . $e->getMessage());
             return response()->json(['error' => 'An error occurred during authentication'], 500);
