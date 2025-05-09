@@ -77,6 +77,12 @@ class BukuaAuthController extends Controller
                 'name'                => $account['user']['first_name'] . ' ' . $account['user']['last_name'],
             ];
 
+            $user = (object) [
+                'id' => 1,
+                'email' => 'user@example.com'
+            ];
+            event(new BukuaUserLoggedInEvent($user));
+
             $user = $userModel::updateOrCreate(
                 ['bukua_user_id' => $account['user']['uid']],
                 $userData
