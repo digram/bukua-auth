@@ -134,3 +134,21 @@ class HandleBukuaUserLoggedIn
 **Example Use Cases:**  
 - Make further api calls, e.g, to fetch user subjects.  
 - Log when a user signs in.
+
+## User Information Endpoints
+
+Endpoints for fetching information about the currently authenticated user.
+
+### Endpoints
+
+#### 1. Basic Profile
+- **Endpoint:** `GET /api/v1/me`
+- **Description:** Retrieves the basic profile information of the logged-in user such as name and school.
+
+#### 2. User Roles  
+- **Endpoint:** `GET /api/v1/me/roles`  
+- **Description:** Returns the roles associated with the current user at their school (e.g., teacher, principal, or head of department).
+
+#### 3. User Subjects  
+- **Endpoint:** `GET /api/v1/me/subjects`  
+- **Description:** Fetches the subjects associated with the authenticated user.
