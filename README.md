@@ -1,6 +1,6 @@
 # Login with Bukua OAuth for Laravel  
 
-This package simplifies **OAuth-based authentication** using Bukua in Laravel applications.
+This package simplifies **OAuth authentication** using Bukua in Laravel applications.
 
 ## Prerequisites  
 
@@ -27,7 +27,7 @@ BUKUA_REDIRECT_AFTER_LOGIN="/dashboard"  # Route after successful login
 
 ### Key Notes:  
 ✅ **`BUKUA_USER_MODEL`**: Ensure this matches your application’s `User` model location.  
-✅ **Callback URL**: Must be registered in your Bukua OAuth settings.
+✅ **Callback URL**: Must be registered when creating a user access client in the developer dashboard.
 
 #### User model configuration
 
