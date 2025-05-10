@@ -95,7 +95,7 @@ To implement the **"Login with Bukua"** button in your Blade template:
 
 ### Events (Optional Customization)  
 
-Listen for the `BukuaAuthLoggedIn` event to extend functionality:  
+Listen for the `BukuaUserLoggedInEvent` event to extend functionality:  
 
 ```php
 // In your EventServiceProvider.php
