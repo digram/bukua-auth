@@ -123,7 +123,7 @@ class HandleBukuaUserLoggedIn
 
         // Write in laravel log
         \Log::info("Bukua user logged in: {$user->uid}", [
-            'user_id' => $user->uid,
+            'user_uid' => $user->uid,
             'email' => $user->email,
             'timestamp' => now(),
         ]);
