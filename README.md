@@ -133,4 +133,4 @@ class HandleBukuaUserLoggedIn
 
 **Example Use Cases:**  
 - Make further api calls, e.g, to fetch user subjects.  
-- Log logins.
+- Log when a user signs in.
