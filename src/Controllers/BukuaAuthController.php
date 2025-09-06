@@ -23,7 +23,15 @@ class BukuaAuthController extends Controller
             'state'         => $state,
         ]);
 
-        return redirect(config('services.bukua_auth.base_url') . 'oauth/authorize?' . $query);
+        $redirectUrl = config('services.bukua_auth.base_url') . 'oauth/authorize?' . $query;
+
+        // check if the request is from Inertia (AJAX request)
+        if ($request->inertia()) {
+            return response('', 409)->header('X-Inertia-Location', $redirectUrl);
+        }
+
+        // regular HTTP redirect for non-Inertia requests
+        return redirect($redirectUrl);
     }
 
     public function callback(Request $request)
@@ -85,6 +93,8 @@ class BukuaAuthController extends Controller
             Auth::guard('web')->login($user);
 
             event(new BukuaUserLoggedInEvent($user));
+
+            // TODO: redirect only if url is provided.
 
             return redirect()->intended(
                 config('services.bukua_auth.redirect_after_login', '/dashboard')

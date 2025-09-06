@@ -93,6 +93,14 @@ To implement the **"Login with Bukua"** button in your Blade template:
 @endif
 ```
 
+If using Laravel with Inertia:
+```html
+<!-- Login with Bukua Button -->
+<Link className="block w-full cursor-pointer" method="post" href={route('bukua-auth.authorize')} as="button">
+    Login with Bukua
+</Link>
+```
+
 ### Events (Optional Customization)  
 
 Listen for the `BukuaUserLoggedInEvent` event to extend functionality:  
