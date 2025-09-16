@@ -35,7 +35,10 @@
             "providers": [
                 "BukuaAuth\\Providers\\BukuaAuthServiceProvider",
                 "BukuaAuth\\Providers\\BukuaAuthEventServiceProvider"
-            ]
+            ],
+            "aliases": {
+               "BukuaAuth": "BukuaAuth\\Facades\\BukuaAuth"
+            }
         }
     }
 }

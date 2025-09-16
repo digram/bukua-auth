@@ -5,7 +5,7 @@ This package simplifies **OAuth authentication** using Bukua in Laravel applicat
 ## Prerequisites  
 
 **Bukua Developer Account**:  
-   - Create a **User Access Client** in the [Bukua Developer Dashboard](https://developer.bukuaplatform.com/).  
+   - Create a **User Access App** in the [Bukua Developer Dashboard](https://www.bukuaplatform.com/login).  
    - Obtain your:  
      - `client_id`  
      - `client_secret`  
@@ -15,19 +15,28 @@ This package simplifies **OAuth authentication** using Bukua in Laravel applicat
 Add these variables to your `.env` file:  
 
 ```bash
+# The client ID and seecret for your developer dashboard
 BUKUA_USER_ACCESS_CLIENT_ID=your-client-id
 BUKUA_USER_ACCESS_CLIENT_SECRET=your-client-secret
 
-BUKUA_USER_ACCESS_CALLBACK_URL="http://your-app-url/bukua-auth/callback"
+# The URL you configured while creating this app
+BUKUA_USER_ACCESS_APP_URL="http://your-app-url/"
+
+# The API endpoint foe the auth server
+# development: https://bukua-core.apptempest.com/
+# production: https://app.bukuaplatform.com/
 BUKUA_BASE_URL="https://bukua-core.apptempest.com/"
 
-BUKUA_USER_MODEL="App\\Models\\User"  # Your User model path
-BUKUA_REDIRECT_AFTER_LOGIN="/dashboard"  # Route after successful login
+# Your User model class. This is the default namespace for laravel.
+BUKUA_USER_MODEL="App\\Models\\User"  
+
+# Where to redirect the user after successful login. Leave as null to implement your own redirect logic using events documented below.
+BUKUA_REDIRECT_AFTER_LOGIN="/dashboard"  
 ```
 
 ### Key Notes:  
 ✅ **`BUKUA_USER_MODEL`**: Ensure this matches your application’s `User` model location.  
-✅ **Callback URL**: Must be registered when creating a user access client in the developer dashboard.
+✅ **App URL**: Must be registered when creating a `user access app` in the developer dashboard.
 
 #### User model configuration
 
@@ -115,6 +124,8 @@ protected $listen = [
 ```
 
 ```php
+use BukuaAuth\Facades\BukuaAuth;
+
 // \App\Listeners\HandleBukuaUserLoggedIn
 class HandleBukuaUserLoggedIn
 {
@@ -135,28 +146,68 @@ class HandleBukuaUserLoggedIn
             'email' => $user->email,
             'timestamp' => now(),
         ]);
+
+        // Fetch the user's school
+        $mySchool = BukuaAuth::school();
+
+        // Redirect the user to your custom dashboard
+        return redirect()->route('dashboard.custom', [
+            'school_uid' => $mySchool->school->uid,
+            'role_uid' => $mySchool->role->uid,
+    ]);
     }
 }
 ```
 
 **Example Use Cases:**  
-- Make further api calls, e.g, to fetch user subjects.  
-- Log when a user signs in.
+- Make further calls, e.g, to fetch which school the user belongs to.  
+- Write to a log file whenever someone logs in from Bukua
 
-## User Information Endpoints
+## User Information Methods
 
-Endpoints for fetching information about the currently authenticated user.
+Methods for fetching information about the currently authenticated user.
 
-### Endpoints
+### Basic Profile
 
-#### 1. Basic Profile
-- **Endpoint:** `GET /api/v1/me`
-- **Description:** Retrieves the basic profile information of the logged-in user such as name and school.
+Retrieves the basic profile information of the logged-in user such as name and email.
 
-#### 2. User Roles  
-- **Endpoint:** `GET /api/v1/me/roles`  
-- **Description:** Returns the roles associated with the current user at their school (e.g., teacher, principal, or head of department).
+```php
+use BukuaAuth\Facades\BukuaAuth;
 
-#### 3. User Subjects  
-- **Endpoint:** `GET /api/v1/me/subjects`  
-- **Description:** Fetches the subjects associated with the authenticated user.
+try {
+    $me = BukuaAuth::me();
+    dd($me);
+} catch (\Exception $e) {
+    // Handle error
+}
+```
+
+### Current School
+
+Returns the school where the user belongs to with their role.
+
+```php
+use BukuaAuth\Facades\BukuaAuth;
+
+try {
+    $mySchool = BukuaAuth::school();
+    dd($mySchool);
+} catch (\Exception $e) {
+    // Handle error
+}
+```
+
+### User Subjects
+
+Fetches the subjects associated with the authenticated user.
+
+```php
+use BukuaAuth\Facades\BukuaAuth;
+
+try {
+    $mySubjects = BukuaAuth::subjects();
+    dd($mySubjects);
+} catch (\Exception $e) {
+    // Handle error
+}
+```

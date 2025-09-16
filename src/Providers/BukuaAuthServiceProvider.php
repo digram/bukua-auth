@@ -3,6 +3,7 @@
 namespace BukuaAuth\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use BukuaAuth\Controllers\BukuaAuthApiController;
 
 class BukuaAuthServiceProvider extends ServiceProvider
 {
@@ -14,6 +15,9 @@ class BukuaAuthServiceProvider extends ServiceProvider
 
     public function register()
     {
-        // Pass
+        // register BukuaAuth facade
+        $this->app->singleton('bukuaauth', function ($app) {
+            return new BukuaAuthApiController();
+        });
     }
 }

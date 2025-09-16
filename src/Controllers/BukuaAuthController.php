@@ -18,12 +18,12 @@ class BukuaAuthController extends Controller
 
         $query = http_build_query([
             'client_id'     => config('services.bukua_auth.user_access_client_id'),
-            'redirect_uri'  => config('services.bukua_auth.user_access_callback_url'),
+            'redirect_uri'  => rtrim(config('services.bukua_auth.user_access_app_url'), '/') . '/bukua-auth/callback',
             'response_type' => 'code',
             'state'         => $state,
         ]);
 
-        $redirectUrl = config('services.bukua_auth.base_url') . 'oauth/authorize?' . $query;
+        $redirectUrl = rtrim(config('services.bukua_auth.base_url'), '/') . '/oauth/authorize?' . $query;
 
         // check if the request is from Inertia (AJAX request)
         if ($request->inertia()) {
@@ -48,11 +48,11 @@ class BukuaAuthController extends Controller
 
         try {
             // request the personal access token
-            $tokenResponse = Http::asForm()->post(config('services.bukua_auth.base_url') . 'api/v1/bukua-auth/personal-token', [
+            $tokenResponse = Http::asForm()->post(rtrim(config('services.bukua_auth.base_url'), '/') . '/api/v1/bukua-auth/personal-token', [
                 'grant_type'    => 'authorization_code',
                 'client_id'     => config('services.bukua_auth.user_access_client_id'),
                 'client_secret' => config('services.bukua_auth.user_access_client_secret'),
-                'redirect_uri'  => config('services.bukua_auth.user_access_callback_url'),
+                'redirect_uri'  => rtrim(config('services.bukua_auth.user_access_app_url'), '/') . '/bukua-auth/callback',
                 'code'          => $request->input('code'),
             ]);
 
@@ -66,7 +66,7 @@ class BukuaAuthController extends Controller
             }
 
             // fetch basic user profile
-            $accountResponse = Http::withToken($tokenData['access_token'])->get(config('services.bukua_auth.base_url') . 'api/v1/me');
+            $accountResponse = Http::withToken($tokenData['access_token'])->get(rtrim(config('services.bukua_auth.base_url'), '/') . '/api/v1/me');
 
             if ($accountResponse->failed()) {
                 return response()->json(['error' => 'Failed to fetch user data'], 400);
@@ -94,8 +94,7 @@ class BukuaAuthController extends Controller
 
             event(new BukuaUserLoggedInEvent($user));
 
-            // TODO: redirect only if url is provided.
-
+            // user was not redirected by the above event listener
             return redirect()->intended(
                 config('services.bukua_auth.redirect_after_login', '/dashboard')
             );
