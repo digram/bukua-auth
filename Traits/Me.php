@@ -9,11 +9,6 @@ trait Me
         return $this->makeAuthenticatedRequest('api/v1/me');
     }
 
-    public function roles()
-    {
-        return $this->makeAuthenticatedRequest('api/v1/me/roles');
-    }
-
     public function school()
     {
         return $this->makeAuthenticatedRequest('api/v1/me/school');
