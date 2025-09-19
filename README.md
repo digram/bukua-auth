@@ -65,7 +65,7 @@ BUKUA_BASE_URL="https://bukua-core.apptempest.com"  # Development
 
 # Application Settings
 BUKUA_USER_MODEL="App\\Models\\User"
-BUKUA_REDIRECT_AFTER_LOGIN="/dashboard"
+BUKUA_REDIRECT_AFTER_LOGIN="/dashboard" # Your dashboard URL. For complex URLS, use events for user redirection.
 ```
 
 **Configuration Notes:**
