@@ -225,14 +225,14 @@ The package dispatches events that you can listen for to extend functionality:
                'timestamp' => now(),
            ]);
 
-           // Fetch additional user data
+           // Fetch basic user profile
            try {
-               $mySchool = BukuaAuth::school();
+               $userProfile = BukuaAuth::me();
                
                // Redirect the user to your custom dashboard
                return redirect()->route('dashboard.custom', [
-                    'school_uid' => $mySchool->school->uid,
-                    'role_uid' => $mySchool->role->uid,
+                    'school_uid' => $userProfile->school->uid,
+                    'role_uid' => $userProfile->role->uid,
                ]);               
            } catch (\Exception $e) {
                Log::error('Failed to fetch user data from Bukua', [
@@ -258,33 +258,9 @@ try {
     $userProfile = BukuaAuth::me();
     
     // Returns: {
-    //   "uid": "user_uid",
-    //   "first_name": "John",
-    //   "last_name": "Doe",
-    //   "email": "user@example.com",
-    //   ...other profile fields
-    // }
-    
-} catch (Exception $e) {
-    // Handle errors
-}
-```
-
-### Current School Information
-
-```php
-try {
-    $schoolInfo = BukuaAuth::school();
-    
-    // Returns: {
-    //   "school": {
-    //     "uid": "school_uid",
-    //     "name": "School Name",
-    //   },
-    //   "role": {
-    //     "uid": "role_uid",
-    //     "name": "Role Name"
-    //   }
+    //   user: {"uid": "user_uid", "first_name": "John", "last_name": "Doe", "email": "john.doe@example.com"}
+    //   school: {"uid": "school_uid", "name": "Jitahidi School"}
+    //   role: {"uid": "role_uid", "name": "Teacher"}
     // }
     
 } catch (Exception $e) {
@@ -301,7 +277,15 @@ try {
     // Returns array of subject objects: [
     //   {
     //     "uid": "subject_uid",
-    //     "name": "Subject Name",
+    //     "name": "Media Technology",
+    //   }
+    //   {
+    //     "uid": "subject_uid",
+    //     "name": "Fasihi ya Kiswahili",
+    //   }
+    //   {
+    //     "uid": "subject_uid",
+    //     "name": "Home Science",
     //   }
     // ]
     
