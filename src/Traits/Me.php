@@ -6,16 +6,16 @@ trait Me
 {
     public function me()
     {
-        return $this->makeAuthenticatedRequest('api/v1/me');
+        return $this->makeAuthenticatedRequest('/api/v1/me');
     }
 
     public function school()
     {
-        return $this->makeAuthenticatedRequest('api/v1/me/school');
+        return $this->makeAuthenticatedRequest('/api/v1/me/school');
     }
 
     public function subjects()
     {
-        return $this->makeAuthenticatedRequest('api/v1/me/subjects');
+        return $this->makeAuthenticatedRequest('/api/v1/me/subjects');
     }
 }

@@ -15,7 +15,6 @@ class BukuaAuthApiController extends Controller
 
     public function __construct()
     {
-        // ensure it has a trailing slash
-        $this->baseUrl = rtrim(config('services.bukua_auth.base_url'), '/') . '/';
+        $this->baseUrl = rtrim(config('services.bukua_auth.base_url'), '/');
     }
 }
