@@ -59,9 +59,9 @@ Add the following variables to your `.env` file:
 # Bukua OAuth Configuration
 BUKUA_USER_ACCESS_CLIENT_ID=your-client-id-here
 BUKUA_USER_ACCESS_CLIENT_SECRET=your-client-secret-here
-BUKUA_USER_ACCESS_APP_URL="https://your-app-url.com/"
-BUKUA_BASE_URL="https://bukua-core.apptempest.com/"  # Development
-# BUKUA_BASE_URL="https://app.bukuaplatform.com/"    # Production
+BUKUA_USER_ACCESS_APP_URL="https://your-app-url.com"
+BUKUA_BASE_URL="https://bukua-core.apptempest.com"  # Development
+# BUKUA_BASE_URL="https://app.bukuaplatform.com"    # Production
 
 # Application Settings
 BUKUA_USER_MODEL="App\\Models\\User"
