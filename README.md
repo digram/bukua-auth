@@ -27,7 +27,7 @@ Before using this package, ensure you have:
    - Create a **User Access App** in the [Developer Dashboard](https://www.bukuaplatform.com/dashboard)
 
 2. **Application Credentials**
-   - Obtain your `client_id` and `client_secret` from the Bukua Developer Dashboard
+   - Obtain your `client_id` and `client_secret` and `app_url` from the Bukua Developer Dashboard
 
 3. **Laravel Application**
    - Laravel 8.x or higher
@@ -42,7 +42,11 @@ Before using this package, ensure you have:
 
 2. **Clear configuration cache:**
    ```bash
+   # For development
    php artisan config:clear && php artisan route:clear
+
+   # For production
+   php artisan config:cache && php artisan route:cache
    ```
 
 ## Configuration
@@ -66,7 +70,7 @@ BUKUA_REDIRECT_AFTER_LOGIN="/dashboard"
 
 **Configuration Notes:**
 - **Environment**: Use the development base URL for testing and production URL for live applications
-- **User Access App URL**: Must exactly match the App URL registered in your Bukua Developer Dashboard
+- **User Access App URL**: Must exactly match the App URL from your Bukua Developer Dashboard
 - **User Model**: Ensure this matches your application's User model namespace
 
 ### Database Setup
@@ -129,19 +133,6 @@ class User extends Authenticatable
         'bukua_access_token',
         'bukua_refresh_token',
     ];
-
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-        ];
-    }
 }
 ```
 
@@ -228,9 +219,8 @@ The package dispatches events that you can listen for to extend functionality:
        {
            $user = $event->user;
            
-           // Log the login event
+           // Log the event
            Log::info('Bukua user logged in', [
-               'user_id' => $user->id,
                'bukua_user_id' => $user->bukua_user_id,
                'timestamp' => now(),
            ]);
@@ -247,7 +237,7 @@ The package dispatches events that you can listen for to extend functionality:
            } catch (\Exception $e) {
                Log::error('Failed to fetch user data from Bukua', [
                    'error' => $e->getMessage(),
-                   'user_id' => $user->id,
+                   'bukua_user_id' => $user->bukua_user_id,
                ]);
            }
        }
@@ -276,8 +266,7 @@ try {
     // }
     
 } catch (Exception $e) {
-    // Handle authentication or API errors
-    logger()->error('Failed to fetch user profile', ['error' => $e->getMessage()]);
+    // Handle errors
 }
 ```
 
@@ -326,9 +315,8 @@ try {
 ### Common Issues
 
 1. **"Invalid redirect_uri" error**
-   - Ensure `BUKUA_USER_ACCESS_APP_URL` matches exactly with your Bukua app settings
-   - Include trailing slash if used in Bukua dashboard
-   - App URL must use HTTPS and be accessible
+   - Ensure `BUKUA_USER_ACCESS_APP_URL` matches exactly with your Bukua app credentials
+   - App URL must use **HTTPS** and be accessible
 
 2. **"Client authentication failed" error**
    - Verify `BUKUA_USER_ACCESS_CLIENT_ID` and `BUKUA_USER_ACCESS_CLIENT_SECRET` are correct
