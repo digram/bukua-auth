@@ -27,7 +27,7 @@ Before using this package, ensure you have:
    - Create a **User Access App** in the [Developer Dashboard](https://www.bukuaplatform.com/dashboard)
 
 2. **Application Credentials**
-   - Obtain your `client_id` and `client_secret` and `app_url` from the Bukua Developer Dashboard
+   - Obtain your `client_id`, `client_secret` and `app_url` from the Bukua Developer Dashboard
 
 3. **Laravel Application**
    - Laravel 8.x or higher
@@ -328,7 +328,7 @@ try {
 
 4. **User creation errors**
    - Check if users table already has the required columns
-   - Ensure all existing fields are nullable as specified
+   - Ensure all existing fields in the users table are nullable as specified
 
 ## Support
 
