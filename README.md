@@ -225,8 +225,8 @@ The package dispatches events that you can listen for to extend functionality:
                'timestamp' => now(),
            ]);
 
-           // Fetch basic user profile
            try {
+               // Fetch basic user profile
                $userProfile = BukuaAuth::me();
                
                // Redirect the user to your custom dashboard
