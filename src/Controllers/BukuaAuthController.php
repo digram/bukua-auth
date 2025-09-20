@@ -45,6 +45,16 @@ class BukuaAuthController extends Controller
 
     public function callback(Request $request)
     {
+        // Add CORS headers before any content
+        header("Access-Control-Allow-Origin: {$this->userAppUrl}");
+        header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
+        header('Access-Control-Allow-Headers: Origin, Content-Type, Accept, Authorization, X-Requested-With');
+        header('Access-Control-Allow-Credentials: true');
+
+        if ($request->isMethod('options')) {
+            return response('', 204);
+        }
+
         $request->validate([
             'code' => 'required|string',
             'state' => 'required|string',
