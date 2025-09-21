@@ -241,13 +241,16 @@ The package dispatches events that you can listen for to extend functionality:
 
 ### Event Listener Setup
 
-Create an example listener in Laravel using **Name**: `HandleBukuaUserLoggedIn` **Event**: `\BukuaAuth\Events\BukuaUserLoggedInEvent`:
+Create an example listener in Laravel using:
+
+**Name**: `HandleBukuaUserLoggedIn`
+**Event**: `\BukuaAuth\Events\BukuaUserLoggedInEvent`:
 
 ```bash
 php artisan make:listener
 ```
 
-**Generated example implementation:**
+**Example listener implementation:**
    ```php
    <?php
 
@@ -275,7 +278,7 @@ php artisan make:listener
            try {
                // Fetch basic user profile
                $userProfile = BukuaAuth::me();
-               
+
                $firstName   = $userProfile['response']['user']['first_name'];
                $schoolName  = $userProfile['response']['school']['name'];
                $schoolUid   = $userProfile['response']['school']['uid'];
