@@ -108,6 +108,7 @@ class BukuaAuthController extends Controller
             );
         } catch (\Exception $e) {
             Log::error('Bukua auth callback error: ' . $e->getMessage());
+            
             return response()->json(['error' => 'An error occurred during authentication'], 500);
         }
     }
