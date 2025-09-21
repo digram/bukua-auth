@@ -101,15 +101,8 @@ class BukuaAuthController extends Controller
 
             Auth::guard('web')->login($user);
 
-            event(new BukuaUserLoggedInEvent($user, $request));
+            event(new BukuaUserLoggedInEvent($user));
 
-            // handle redirect if set in session by event listener
-            if ($request->session()->has('bukua_redirect')) {
-                $redirectTo = $request->session()->pull('bukua_redirect');
-                return redirect()->route($redirectTo['route'], $redirectTo['params']);
-            }
-
-            // user was not redirected by the above event listener
             return redirect()->intended(
                 config('services.bukua_auth.redirect_after_login', '/')
             );
