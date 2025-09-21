@@ -10,6 +10,7 @@ This package provides seamless **OAuth 2.0 authentication** with Bukua for Larav
   - [Environment Variables](#environment-variables)
   - [Database Setup](#database-setup)
   - [User Model Configuration](#user-model-configuration)
+  - [CORS Configuration](#cors-configuration)
 - [Usage](#usage)
   - [Login Button Implementation](#login-button-implementation)
   - [Authentication Routes](#authentication-routes)
@@ -135,6 +136,55 @@ class User extends Authenticatable
     ];
 }
 ```
+
+### CORS Configuration
+
+To handle cross-origin requests properly, configure your Laravel CORS settings in `config/cors.php`:
+
+If your Laravel application doesn't have the CORS configuration file, generate it using:
+
+```bash
+php artisan config:publish cors
+```
+
+This will create the `config/cors.php` file if it doesn't already exist.
+
+Update your `config/cors.php` file with the following settings:
+
+```php
+return [
+    'paths' => [
+        'api/*',
+        'sanctum/csrf-cookie',
+        'bukua-auth/callback', // Bukua OAuth callback
+    ],
+
+    'allowed_methods' => ['*'],
+
+    'allowed_origins' => [
+        'https://bukua-core.apptempest.com', // Bukua development environment
+        'https://app.bukuaplatform.com',     // Bukua production environment
+    ],
+
+    'allowed_origins_patterns' => [],
+
+    'allowed_headers' => ['*'],
+
+    'exposed_headers' => [
+        'X-Inertia-Location', // Bukua OAuth redirects
+        'X-Inertia',          // Bukua OAuth responses
+    ],
+
+    'max_age' => 0,
+
+    'supports_credentials' => false,
+];
+```
+
+**CORS Configuration Notes:**
+- Ensure the `paths` array includes `'bukua-auth/callback'` to handle OAuth callbacks
+- Add both Bukua domains to `allowed_origins` for proper cross-origin requests
+- Include `'X-Inertia-Location'` and `'X-Inertia'` in `exposed_headers` for OAuth redirection
 
 ## Usage
 
@@ -313,6 +363,11 @@ try {
 4. **User creation errors**
    - Check if users table already has the required columns
    - Ensure all existing fields in the users table are nullable as specified
+
+5. **CORS issues**
+   - Verify `bukua-auth/callback` is added to CORS paths
+   - Ensure Bukua domains are in allowed_origins
+   - Check that X-Inertia headers are exposed
 
 ## Support
 
