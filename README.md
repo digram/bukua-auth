@@ -66,7 +66,7 @@ BUKUA_BASE_URL="https://bukua-core.apptempest.com"  # Development
 
 # Application Settings
 BUKUA_USER_MODEL="App\\Models\\User"
-BUKUA_REDIRECT_AFTER_LOGIN="/dashboard" # Your dashboard URL. For complex URLs, use events for user redirection
+BUKUA_REDIRECT_AFTER_LOGIN="/dashboard" # Your authenticated user dashboard URL
 ```
 
 **Configuration Notes:**
@@ -241,16 +241,13 @@ The package dispatches events that you can listen for to extend functionality:
 
 ### Event Listener Setup
 
-1. **Register listeners in `EventServiceProvider`:**
-   ```php
-   protected $listen = [
-       \BukuaAuth\Events\BukuaUserLoggedInEvent::class => [
-           \App\Listeners\HandleBukuaUserLoggedIn::class,
-       ],
-   ];
-   ```
+Create an example listener in Laravel using **Name**: `HandleBukuaUserLoggedIn` **Event**: `\BukuaAuth\Events\BukuaUserLoggedInEvent`:
 
-2. **Example listener implementation:**
+```bash
+php artisan make:listener
+```
+
+**Generated example implementation:**
    ```php
    <?php
 
@@ -278,12 +275,13 @@ The package dispatches events that you can listen for to extend functionality:
            try {
                // Fetch basic user profile
                $userProfile = BukuaAuth::me();
-               
-               // Redirect the user to your custom dashboard
-               return redirect()->route('dashboard.custom', [
-                    'school_uid' => $userProfile->school->uid,
-                    'role_uid' => $userProfile->role->uid,
-               ]);               
+               $firstName   = $userProfile['response']['user']['first_name'];
+               $schoolName  = $userProfile['response']['school']['name'];
+               $schoolUid   = $userProfile['response']['school']['uid'];
+               $roleName    = $userProfile['response']['role']['name'];
+               $roleUid     = $userProfile['response']['role']['uid'];
+
+               // Run your business logic ...                           
            } catch (\Exception $e) {
                Log::error('Failed to fetch user data from Bukua', [
                    'error' => $e->getMessage(),
