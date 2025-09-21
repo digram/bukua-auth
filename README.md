@@ -275,6 +275,7 @@ php artisan make:listener
            try {
                // Fetch basic user profile
                $userProfile = BukuaAuth::me();
+               
                $firstName   = $userProfile['response']['user']['first_name'];
                $schoolName  = $userProfile['response']['school']['name'];
                $schoolUid   = $userProfile['response']['school']['uid'];
