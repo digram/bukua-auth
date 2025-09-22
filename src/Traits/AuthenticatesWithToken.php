@@ -5,6 +5,7 @@ namespace BukuaAuth\Traits;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 
 trait AuthenticatesWithToken
 {
@@ -14,6 +15,12 @@ trait AuthenticatesWithToken
 
         if (!$token) {
             throw new \RuntimeException('Unable to retrieve access token');
+        }
+
+        try {
+            $token = Crypt::decryptString($token);
+        } catch (\Exception $e) {
+            throw new \RuntimeException('Unable to decrypt access token');
         }
 
         try {

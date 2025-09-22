@@ -7,6 +7,7 @@ use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Crypt;
 
 use BukuaAuth\Events\BukuaUserLoggedInEvent;
 
@@ -89,8 +90,8 @@ class BukuaAuthController extends Controller
             $userModel = config('services.bukua_auth.user_model');
 
             $userData = [
-                'bukua_access_token'  => $tokenData['access_token'],
-                'bukua_refresh_token' => $tokenData['refresh_token'],
+                'bukua_access_token'  => Crypt::encryptString($tokenData['access_token']),
+                'bukua_refresh_token' => Crypt::encryptString($tokenData['refresh_token']),
                 'name'                => $account['user']['first_name'] . ' ' . $account['user']['last_name'],
             ];
 
@@ -108,7 +109,7 @@ class BukuaAuthController extends Controller
             );
         } catch (\Exception $e) {
             Log::error('Bukua auth callback error: ' . $e->getMessage());
-            
+
             return response()->json(['error' => 'An error occurred during authentication'], 500);
         }
     }

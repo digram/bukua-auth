@@ -1,4 +1,4 @@
-# Laravel Bukua OAuth Integration
+# Login with Bukua Laravel Integration
 
 This package provides seamless **OAuth 2.0 authentication** with Bukua for Laravel applications, handling the complete authentication flow and user management.
 
@@ -24,8 +24,8 @@ This package provides seamless **OAuth 2.0 authentication** with Bukua for Larav
 Before using this package, ensure you have:
 
 1. **Bukua Developer Account**
-   - Register as an app developer at [Bukua Platform](https://www.bukuaplatform.com/login)
-   - Create a **User Access App** in the [Developer Dashboard](https://www.bukuaplatform.com/dashboard)
+   - Register as an app developer at [Bukua Platform](https://bukua-core.apptempest.com/login)
+   - Create a **User Access App** in the [Developer Dashboard](https://bukua-core.apptempest.com/dashboard)
 
 2. **Application Credentials**
    - Obtain your `client_id`, `client_secret` and `app_url` from the Bukua Developer Dashboard
