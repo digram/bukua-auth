@@ -19,7 +19,7 @@ class BukuaAuthController extends Controller
     public function __construct()
     {
         $this->baseUrl = rtrim(config('services.bukua_auth.base_url'), '/');
-        $this->userAppUrl = rtrim(config('services.bukua_auth.user_access_app_url'), '/');
+        $this->userAppUrl = rtrim(config('services.bukua_auth.app_url'), '/');
     }
 
     public function authorize(Request $request)
@@ -27,7 +27,7 @@ class BukuaAuthController extends Controller
         $request->session()->put('bukua_auth_state', $state = str()->random(40));
 
         $query = http_build_query([
-            'client_id'     => config('services.bukua_auth.user_access_client_id'),
+            'client_id'     => config('services.bukua_auth.client_id'),
             'redirect_uri'  => $this->userAppUrl . '/bukua-auth/callback',
             'response_type' => 'code',
             'state'         => $state,
@@ -60,8 +60,8 @@ class BukuaAuthController extends Controller
             // request the personal access token
             $tokenResponse = Http::asForm()->post($this->baseUrl . '/api/v1/bukua-auth/personal-token', [
                 'grant_type'    => 'authorization_code',
-                'client_id'     => config('services.bukua_auth.user_access_client_id'),
-                'client_secret' => config('services.bukua_auth.user_access_client_secret'),
+                'client_id'     => config('services.bukua_auth.client_id'),
+                'client_secret' => config('services.bukua_auth.client_secret'),
                 'redirect_uri'  => $this->userAppUrl . '/bukua-auth/callback',
                 'code'          => $request->input('code'),
             ]);
