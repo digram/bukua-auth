@@ -51,8 +51,8 @@ class BukuaAuthController extends Controller
             'state' => 'required|string',
         ]);
 
-        $expectedState = urldecode(config('services.bukua_auth.secret'));
-        if ($expectedState !== $request->input('state')) {
+        $expectedState = config('services.bukua_auth.secret');
+        if ($expectedState !== urldecode($request->input('state'))) {
             abort(403, 'Invalid state parameter');
         }
 
