@@ -24,8 +24,7 @@ class BukuaAuthController extends Controller
 
     public function authorize(Request $request)
     {
-        $state = str()->random(40);
-        cache(['bukua_auth_state' => $state], now()->addMinutes(10));
+        $state = config('services.bukua_auth.secret');
 
         $query = http_build_query([
             'client_id'     => config('services.bukua_auth.client_id'),
@@ -51,8 +50,8 @@ class BukuaAuthController extends Controller
             'code' => 'required|string',
             'state' => 'required|string',
         ]);
-        
-        $expectedState = cache('bukua_auth_state');
+
+        $expectedState = config('services.bukua_auth.secret');
         if ($expectedState !== $request->input('state')) {
             abort(403, 'Invalid state parameter');
         }
