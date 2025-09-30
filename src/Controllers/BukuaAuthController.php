@@ -111,9 +111,10 @@ class BukuaAuthController extends Controller
 
             event(new BukuaUserLoggedInEvent($user));
 
-            return Inertia::location(
-                config('services.bukua_auth.redirect_after_login', '/')
-            );
+            $redirectPath = ltrim(config('services.bukua_auth.redirect_after_login', '/'), '/');
+            $redirectUrl = $this->userAppUrl . '/' . $redirectPath;
+
+            return Inertia::location($redirectUrl);
 
             // return redirect()->intended(
             //     config('services.bukua_auth.redirect_after_login', '/')
