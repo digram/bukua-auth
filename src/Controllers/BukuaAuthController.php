@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Crypt;
+use Inertia\Inertia;
 
 use BukuaAuth\Events\BukuaUserLoggedInEvent;
 use BukuaAuth\Traits\HasHmac;
@@ -110,9 +111,13 @@ class BukuaAuthController extends Controller
 
             event(new BukuaUserLoggedInEvent($user));
 
-            return redirect()->intended(
+            return Inertia::location(
                 config('services.bukua_auth.redirect_after_login', '/')
             );
+
+            // return redirect()->intended(
+            //     config('services.bukua_auth.redirect_after_login', '/')
+            // );
         } catch (\Exception $e) {
             Log::error('Bukua auth callback error: ' . $e->getMessage());
 
