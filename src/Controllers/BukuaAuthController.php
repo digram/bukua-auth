@@ -10,11 +10,13 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Crypt;
 
 use BukuaAuth\Events\BukuaUserLoggedInEvent;
+use BukuaAuth\Traits\HasHmac;
 
 class BukuaAuthController extends Controller
 {
     protected string $baseUrl;
     protected string $userAppUrl;
+    use HasHmac;
 
     public function __construct()
     {
@@ -24,7 +26,9 @@ class BukuaAuthController extends Controller
 
     public function authorize(Request $request)
     {
-        $request->session()->put('bukua_auth_state', $state = str()->random(40));
+        $dataStr = str()->random(10);
+        $signature = $this->generateHmac($dataStr);
+        $state   = urlencode($dataStr . '|' . $signature);
 
         $query = http_build_query([
             'client_id'     => config('services.bukua_auth.client_id'),
@@ -51,8 +55,10 @@ class BukuaAuthController extends Controller
             'state' => 'required|string',
         ]);
 
-        $expectedState = session()->pull('bukua_auth_state');
-        if ($expectedState !== $request->input('state')) {
+        $state = urldecode($request->input('state'));
+        $stateParts = explode('|', $state, 2);
+
+        if (count($stateParts) !== 2 || !$this->verifyHmac($stateParts[0], $stateParts[1])) {
             abort(403, 'Invalid state parameter');
         }
 
