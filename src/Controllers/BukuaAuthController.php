@@ -40,12 +40,12 @@ class BukuaAuthController extends Controller
         $redirectUrl = $this->baseUrl . '/oauth/authorize?' . $query;
 
         // check if the request is from Inertia (AJAX request)
-        if (method_exists($request, 'inertia') && $request->inertia()) {
+        if ($request->header('X-Inertia')) {
             return response('', 409)->header('X-Inertia-Location', $redirectUrl);
+        } else {
+            // regular HTTP redirect for non-Inertia requests
+            return redirect($redirectUrl);
         }
-
-        // regular HTTP redirect for non-Inertia requests
-        return redirect($redirectUrl);
     }
 
     public function callback(Request $request)
