@@ -41,18 +41,24 @@ class BukuaAuthController extends Controller
         $redirectUrl = $this->baseUrl . '/oauth/authorize?' . $query;
 
         return Inertia::location($redirectUrl);
-
-        // check if the request is from Inertia (AJAX request)
-        // if ($request->header('X-Inertia')) {
-        //     return response('', 409)->header('X-Inertia-Location', $redirectUrl);
-        // } else {
-        //     // regular HTTP redirect for non-Inertia requests
-        //     return redirect($redirectUrl);
-        // }
     }
 
     public function callback(Request $request)
     {
+        // check if authorization was denied
+        if ($request->has('error')) {
+            $error = $request->input('error');
+            $errorDescription = $request->input('error_description', 'Authorization was denied');
+
+            Log::warning('Bukua auth authorization denied', [
+                'error' => $error,
+                'error_description' => $errorDescription
+            ]);
+
+            return Inertia::location($this->userAppUrl . '?error=' . urlencode("Authorization failed: {$errorDescription}"));
+        }
+
+        // validate for successful authorization
         $request->validate([
             'code' => 'required|string',
             'state' => 'required|string',
@@ -117,10 +123,6 @@ class BukuaAuthController extends Controller
             $redirectUrl = $this->userAppUrl . '/' . $redirectPath;
 
             return Inertia::location($redirectUrl);
-
-            // return redirect()->intended(
-            //     config('services.bukua_auth.redirect_after_login', '/')
-            // );
         } catch (\Exception $e) {
             Log::error('Bukua auth callback error: ' . $e->getMessage());
 
