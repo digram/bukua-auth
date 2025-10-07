@@ -309,9 +309,7 @@ use Exception;
 try {
     $userProfile = BukuaAuth::me();
 
-    echo "<pre>";
     print_r($userProfile);
-    echo "</pre>";
     
     // Returns: {
     //   user: {"uid": "user_uid", "first_name": "John", "last_name": "Doe", "email": "john.doe@example.com"}
@@ -320,7 +318,7 @@ try {
     // }
     
 } catch (Exception $e) {
-    // Handle errors
+    echo "Error: " . $e->getMessage();
 }
 ```
 
@@ -330,9 +328,7 @@ try {
 try {
     $subjects = BukuaAuth::subjects();
 
-    echo "<pre>";
     print_r($subjects);
-    echo "</pre>";
     
     // Returns array of subject objects: [
     //   {
@@ -350,7 +346,7 @@ try {
     // ]
     
 } catch (Exception $e) {
-    // Handle errors
+    echo "Error: " . $e->getMessage();
 }
 ```
 
