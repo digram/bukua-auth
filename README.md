@@ -304,7 +304,6 @@ The package provides several methods to interact with Bukua's API:
 
 ```php
 use BukuaAuth\Facades\BukuaAuth;
-use Exception;
 
 try {
     $userProfile = BukuaAuth::me();
@@ -317,7 +316,7 @@ try {
     //   role: {"uid": "role_uid", "name": "Teacher"}
     // }
     
-} catch (Exception $e) {
+} catch (\Exception $e) {
     echo "Error: " . $e->getMessage();
 }
 ```
@@ -345,7 +344,7 @@ try {
     //   }
     // ]
     
-} catch (Exception $e) {
+} catch (\Exception $e) {
     echo "Error: " . $e->getMessage();
 }
 ```
