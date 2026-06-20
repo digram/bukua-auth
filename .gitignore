@@ -3,3 +3,5 @@ cheatsheet.txt
 vendor/
 node_modules/
 .env
+concepts_onboarding.md
+mermaid.md
