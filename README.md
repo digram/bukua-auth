@@ -69,14 +69,12 @@ BUKUA_BASE_URL="https://bukua-core.apptempest.com"  # Development
 # Application Settings
 BUKUA_USER_MODEL="App\\Models\\User"
 BUKUA_REDIRECT_AFTER_LOGIN="/dashboard" # Your authenticated user dashboard URL
-BUKUA_USER_ACCESS_APP_UID=your-app-uid-from-developer-dashboard # Used to read your app role from /api/v1/me
 ```
 
 **Configuration Notes:**
 
 - **Environment**: Use the development base URL for testing and production URL for live applications
 - **User Access App URL**: Must exactly match the App URL from your Bukua Developer Dashboard
-- **User Access App UID**: The UUID of your app in the Developer Dashboard. Used to pick your app's role from the `app_roles` array returned by `/api/v1/me`. This is different from the OAuth `client_id`.
 - **User Model**: Ensure this matches your application's User model namespace
 
 ### Database Setup
@@ -288,13 +286,12 @@ class HandleBukuaUserLoggedIn
             $profile = BukuaAuth::me();
             $data = $profile['response'];
 
-            $firstName = $data['user']['first_name'];
-            $workspaceName = $data['context']['name'];
-            $workspaceUid = $data['context']['uid'];
-            $appRole = collect($data['app_roles'] ?? [])
-                ->firstWhere('app_uid', env('BUKUA_USER_ACCESS_APP_UID'));
+               $firstName = $data['user']['first_name'];
+               $workspaceName = $data['context']['name'];
+               $workspaceUid = $data['context']['uid'];
+               $appRoles = $data['app_roles'] ?? [];
 
-            // Run your business logic ...
+               // Run your business logic ...
         } catch (\Exception $e) {
             Log::error('Failed to fetch user data from Bukua', [
                 'error' => $e->getMessage(),
@@ -336,7 +333,7 @@ try {
 
 #### Response shape
 
-The profile reflects the user's **active workspace** on Bukua (school or organization tenant) and the **app roles** they hold in that workspace.
+The profile reflects the user's **active workspace** on Bukua (school or organization tenant) and the **app roles they hold in your app** within that workspace.
 
 ```json
 {
@@ -362,10 +359,7 @@ The profile reflects the user's **active workspace** on Bukua (school or organiz
       }
     }
   },
-  "app_roles": [
-    { "app_uid": "01932f1a-…", "role": "Teacher" },
-    { "app_uid": "01932f1a-…", "role": "Learner" }
-  ],
+  "app_roles": ["Teacher", "Class Admin"],
   "enrolment_number": "ADM/2024/001",
   "is_verified": true
 }
@@ -373,38 +367,37 @@ The profile reflects the user's **active workspace** on Bukua (school or organiz
 
 #### Field reference
 
-| Field                  | Description                                                                                                                      |
-| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `user`                 | Core identity fields for the logged-in Bukua user.                                                                               |
-| `user.phone_number`    | Only present when the token includes the `phones:view:own` scope. Otherwise `null`.                                              |
-| `context`              | The user's currently active workspace.                                                                                           |
-| `context.kind`         | `"school"` or `"organization"`.                                                                                                  |
-| `context.uid`          | UID of the active workspace entity (school UID when `kind` is `school`, organization UID when `kind` is `organization`).         |
-| `context.name`         | Display name of the active workspace.                                                                                            |
-| `context.logo`         | Logo URL for the workspace, or `null`.                                                                                           |
-| `context.organization` | Parent tenant. For school workspaces this is the owning organization; for organization workspaces it is the organization itself. |
-| `app_roles`            | Roles this user holds **in your app** (and any other installed apps) within the active workspace.                                |
-| `app_roles[].app_uid`  | UID of the Bukua app this role belongs to. Match this against your app's UID from the Developer Dashboard.                       |
-| `app_roles[].role`     | The app-specific role name (e.g. `Teacher`, `Learner`, `Admin`).                                                                 |
-| `enrolment_number`     | Admission or membership number in the active workspace, when applicable.                                                         |
-| `is_verified`          | Whether the user's enrolment in the active workspace is verified.                                                                |
+| Field                  | Description                                                                                                                               |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `user`                 | Core identity fields for the logged-in Bukua user.                                                                                        |
+| `user.phone_number`    | Only present when the token includes the `phones:view:own` scope. Otherwise `null`.                                                       |
+| `context`              | The user's currently active workspace.                                                                                                    |
+| `context.kind`         | `"school"` or `"organization"`.                                                                                                           |
+| `context.uid`          | UID of the active workspace entity (school UID when `kind` is `school`, organization UID when `kind` is `organization`).                  |
+| `context.name`         | Display name of the active workspace.                                                                                                     |
+| `context.logo`         | Logo URL for the workspace, or `null`.                                                                                                    |
+| `context.organization` | Parent tenant. For school workspaces this is the owning organization; for organization workspaces it is the organization itself.          |
+| `app_roles`            | Role names this user holds **in your app only**, within the active workspace (e.g. `["Teacher"]`, `["Teacher", "Class Admin"]`, or `[]`). |
+| `enrolment_number`     | Admission or membership number in the active workspace, when applicable.                                                                  |
+| `is_verified`          | Whether the user's enrolment in the active workspace is verified.                                                                         |
 
 #### Common integration patterns
 
-**Find your app's role for the logged-in user**
+**Read the user's roles in your app**
 
-Each User Access App has a UID in the Bukua Developer Dashboard. Filter `app_roles` by that UID:
+`app_roles` is a flat array of role name strings, already scoped to your app:
 
 ```php
 $profile = BukuaAuth::me()['response'];
 
-$myAppUid = env('BUKUA_USER_ACCESS_APP_UID'); // add this to your .env / config
+$appRoles = $profile['app_roles'] ?? []; // e.g. ["Teacher"] or ["Teacher", "Class Admin"]
 
-$myAppRole = collect($profile['app_roles'] ?? [])
-    ->firstWhere('app_uid', $myAppUid);
-
-$roleName = $myAppRole['role'] ?? null; // e.g. "Teacher"
+if (in_array('Teacher', $appRoles, true)) {
+    // ...
+}
 ```
+
+An empty array means the user has no assigned roles in your app for their current workspace.
 
 **Resolve the active school**
 
@@ -436,8 +429,6 @@ When `context.kind` is `"organization"`, the user is working at the organization
 | `401`     | Missing or invalid access token.                                                                  |
 | `403`     | Token is valid but lacks `profiles:view:own`.                                                     |
 | `404`     | User has no active workspace on Bukua. Prompt them to select or join a school/organization first. |
-
-> **Migration note:** Older Bukua API versions returned top-level `school` and `role` objects. These have been replaced by `context` (workspace) and `app_roles` (per-app role assignments). Update any code that reads `$profile['school']` or `$profile['role']`.
 
 ### User Subjects
 
