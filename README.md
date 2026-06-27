@@ -289,7 +289,7 @@ class HandleBukuaUserLoggedIn
                $firstName = $data['user']['first_name'];
                $workspaceName = $data['context']['name'];
                $workspaceUid = $data['context']['uid'];
-               $appRoles = $data['app_roles'] ?? [];
+               $appRoles = $data['app']['roles'] ?? [];
 
                // Run your business logic ...
         } catch (\Exception $e) {
@@ -333,7 +333,7 @@ try {
 
 #### Response shape
 
-The profile reflects the user's **active workspace** on Bukua (school or organization tenant) and the **app roles they hold in your app** within that workspace.
+The profile reflects the user's **active workspace** on Bukua (school or organization tenant) and the **calling app's install state and roles** within that workspace.
 
 ```json
 {
@@ -359,11 +359,18 @@ The profile reflects the user's **active workspace** on Bukua (school or organiz
       }
     }
   },
-  "app_roles": ["Teacher", "Class Admin"],
+  "app": {
+    "roles": ["Teacher", "Class Admin"],
+    "status": "active",
+    "expires_at": null,
+    "trial_ends_at": "2026-07-15T00:00:00+00:00"
+  },
   "enrolment_number": "ADM/2024/001",
   "is_verified": true
 }
 ```
+
+When the access token is not from a User Access App OAuth client, `app` is `null`.
 
 #### Field reference
 
@@ -377,27 +384,50 @@ The profile reflects the user's **active workspace** on Bukua (school or organiz
 | `context.name`         | Display name of the active workspace.                                                                                                     |
 | `context.logo`         | Logo URL for the workspace, or `null`.                                                                                                    |
 | `context.organization` | Parent tenant. For school workspaces this is the owning organization; for organization workspaces it is the organization itself.          |
-| `app_roles`            | Role names this user holds **in your app only**, within the active workspace (e.g. `["Teacher"]`, `["Teacher", "Class Admin"]`, or `[]`). |
+| `app`                  | Calling User Access App in the active workspace, or `null` when the token is not from an app OAuth client.                                |
+| `app.roles`            | Role names this user holds **in your app only** (e.g. `["Teacher"]`, `["Teacher", "Class Admin"]`, or `[]`).                              |
+| `app.status`           | Organization install status for your app: `active`, `trialling`, `suspended`, `expired`, `uninstalled`, or `null` if not installed.     |
+| `app.expires_at`       | Subscription expiry (ISO 8601), or `null`.                                                                                                 |
+| `app.trial_ends_at`    | Trial end date (ISO 8601), or `null`.                                                                                                     |
 | `enrolment_number`     | Admission or membership number in the active workspace, when applicable.                                                                  |
 | `is_verified`          | Whether the user's enrolment in the active workspace is verified.                                                                         |
 
 #### Common integration patterns
 
+**Check install status before granting access**
+
+Only `active` and `trialling` installs should receive full access. Other statuses mean the organization no longer has access to your app:
+
+```php
+$profile = BukuaAuth::me()['response'];
+$app = $profile['app'] ?? null;
+
+if ($app === null) {
+    // Token is not from a User Access App client
+}
+
+$status = $app['status'] ?? null;
+
+if (! in_array($status, ['active', 'trialling'], true)) {
+    // Handle suspended, expired, uninstalled, or not installed
+}
+```
+
 **Read the user's roles in your app**
 
-`app_roles` is a flat array of role name strings, already scoped to your app:
+`app.roles` is a flat array of role name strings, already scoped to your app:
 
 ```php
 $profile = BukuaAuth::me()['response'];
 
-$appRoles = $profile['app_roles'] ?? []; // e.g. ["Teacher"] or ["Teacher", "Class Admin"]
+$appRoles = $profile['app']['roles'] ?? []; // e.g. ["Teacher"] or ["Teacher", "Class Admin"]
 
 if (in_array('Teacher', $appRoles, true)) {
     // ...
 }
 ```
 
-An empty array means the user has no assigned roles in your app for their current workspace.
+An empty `roles` array can mean the user has no assigned roles, or that the install is not accessible (`suspended`, `expired`, etc.). Check `app.status` to tell the difference.
 
 **Resolve the active school**
 
